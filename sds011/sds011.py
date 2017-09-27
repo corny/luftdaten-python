@@ -55,7 +55,7 @@ class SDS011(object):
     Each serial message starts with 0xAA and ends with 0xAB.
     If the message will be send to the senor, the second byte is 0xB4, the 16th and 17th
     byte is 0xFF.
-    If it is a response of the sensor of a message sended before, the second byte of the response
+    If it is a response of the sensor of a message sent before, the second byte of the response
     is 0xC5. If its a response send automatic by the sensor in "Initiative" Report Mode,
     the second byte is 0xC0.
     The third byte is always the command byte except in response to a request command or a sensor
@@ -370,10 +370,13 @@ class SDS011(object):
         self.device.flush()
         if written_bytes != len(bytes_to_send):
             raise IOError("Not all bytes written")
-        logging.debug("Sended and flushed: %s", bytes_to_send)
+        logging.debug("Sent and flushed: %s", bytes_to_send)
         # proof the receive value
         received = self.__response(command)
         logging.debug("Received: %s", received)
+
+        if len(received) == 0:
+            raise ValueError("nothing received")
 
         # when no command or command is request command,
         # second byte has to be ReceiveByte
@@ -399,7 +402,7 @@ class SDS011(object):
 
     def __response(self, command=None):
         '''gets and proofs the response from the senor. Response can be
-        the response of a sended command or just the measured date while sensor
+        the response of a sent command or just the measured date while sensor
         is in reportmode Initiative'''
         # receive the response while listening serial input
         bytes_received = bytearray(1)
@@ -437,7 +440,7 @@ class SDS011(object):
             if bytes_received[2] != command.value:
                 raise IOError(
                     "Third byte of serial data {0} received is not belonging \
-                    to prior sended command {1}".format(bytes_received[2], command.name))
+                    to prior sent command {1}".format(bytes_received[2], command.name))
 
         if command is None or command is self.Command.Request:
             if bytes_received[1] is not self.__ReceiveByte:

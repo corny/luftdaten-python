@@ -1,0 +1,14 @@
+# /etc/systemd/system/dusty.service
+
+[Unit]
+Description=Dusty
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=dusty
+WorkingDirectoy=/home/dusty/python
+ExecStart=/home/dusty/python/main.py
+
+[Install]
+WantedBy=multi-user.target
