@@ -1,6 +1,5 @@
 luftdaten:
   enabled: true
-  sensor:  raspi-0000000000abcdef
 
 influxdb:
   enabled:  false
