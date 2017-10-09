@@ -1,6 +1,6 @@
 # dusty-python
 
-Python 3 program for the luftdaten.info sensor network.
+Python 3 program for the [luftdaten.info](http://luftdaten.info/) sensor network.
 
 
 ## Supported Hardware
