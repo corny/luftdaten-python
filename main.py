@@ -118,7 +118,7 @@ def getSerial():
     with open('/proc/cpuinfo','r') as f:
         for line in f:
             if line[0:6]=='Serial':
-                print(line[10:26])
+                return(line[10:26])
     raise Exception('CPU serial not found')
 
 def run():
