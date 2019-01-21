@@ -134,7 +134,7 @@ def run():
     m.sendInflux()
 
 
-sensorID  = "raspi-" + getSerial()
+sensorID  = config['luftdaten'].get('sensor') or ("raspi-" + getSerial())
 starttime = time.time()
 
 while True:

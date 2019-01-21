@@ -1,6 +1,9 @@
 luftdaten:
   enabled: true
 
+  # Override the serial derived from the CPU
+  # sensor: 012345
+
 influxdb:
   enabled:  false
   url:      'http://example.com:8086/write?precision=s&db=sensors'
