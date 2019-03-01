@@ -6,14 +6,11 @@ import yaml
 
 # Import-Pfade setzen
 sys.path.append(os.path.join(sys.path[0],"sds011"))
-sys.path.append(os.path.join(sys.path[0],"bme280"))
-
 import time
 import json
 import requests
 import numpy as np
 from sds011 import SDS011
-from Adafruit_BME280 import *
 
 # Config
 with open("config.yml", 'r') as ymlfile:
@@ -21,14 +18,7 @@ with open("config.yml", 'r') as ymlfile:
 
 # Logging
 import logging
-logging.basicConfig(level=logging.DEBUG)
-
-bme280 = BME280(
-    address=0x76,
-    t_mode=BME280_OSAMPLE_8,
-    p_mode=BME280_OSAMPLE_8,
-    h_mode=BME280_OSAMPLE_8,
-)
+logging.basicConfig(level=logging.INFO)
 
 # Create an instance of your bme280
 dusty = SDS011('/dev/ttyUSB0')
@@ -55,9 +45,6 @@ class Measurement:
 
         self.pm25_value  = np.mean(pm25_values)
         self.pm10_value  = np.mean(pm10_values)
-        self.temperature = bme280.read_temperature()
-        self.humidity    = bme280.read_humidity()
-        self.pressure    = bme280.read_pressure()
 
     def sendInflux(self):
         cfg = config['influxdb']
@@ -65,13 +52,10 @@ class Measurement:
         if not cfg['enabled']:
             return
 
-        data = "feinstaub,node={} SDS_P1={:0.2f},SDS_P2={:0.2f},BME280_temperature={:0.2f},BME280_pressure={:0.2f},BME280_humidity={:0.2f}".format(
+        data = "feinstaub,node={} SDS_P1={:0.2f},SDS_P2={:0.2f}".format(
             cfg['node'],
             self.pm10_value,
             self.pm25_value,
-            self.temperature,
-            self.pressure,
-            self.humidity,
         )
 
         requests.post(cfg['url'],
@@ -86,18 +70,10 @@ class Measurement:
         self.__pushLuftdaten('https://api-rrd.madavi.de/data.php', 0, {
             "SDS_P1":             self.pm10_value,
             "SDS_P2":             self.pm25_value,
-            "BME280_temperature": self.temperature,
-            "BME280_pressure":    self.pressure,
-            "BME280_humidity":    self.humidity,
         })
         self.__pushLuftdaten('https://api.luftdaten.info/v1/push-sensor-data/', 1, {
             "P1": self.pm10_value,
             "P2": self.pm25_value,
-        })
-        self.__pushLuftdaten('https://api.luftdaten.info/v1/push-sensor-data/', 11, {
-            "temperature": self.temperature,
-            "pressure":    self.pressure,
-            "humidity":    self.humidity,
         })
 
 
@@ -122,13 +98,11 @@ def getSerial():
     raise Exception('CPU serial not found')
 
 def run():
+    print('Starting measurement')
     m = Measurement()
-
+    print('Sending data to: http://www.madavi.de/sensor/graph.php?sensor={}-sds011'.format(sensorID))
     print('pm2.5     = {:f} '.format(m.pm25_value))
     print('pm10      = {:f} '.format(m.pm10_value))
-    print('Temp      = {:0.2f} deg C'.format(m.temperature))
-    print('Humidity  = {:0.2f} %'.format(m.humidity))
-    print('Pressure  = {:0.2f} hPa'.format(m.pressure/100))
 
     m.sendLuftdaten()
     m.sendInflux()
@@ -140,6 +114,6 @@ starttime = time.time()
 while True:
     print("running ...")
     run()
-    time.sleep(60.0 - ((time.time() - starttime) % 60.0))
+    time.sleep(config['luftdaten'].get('sleepTime') - ((time.time() - starttime) % config['luftdaten'].get('sleepTime')))
 
 print("Stopped")
