@@ -9,6 +9,7 @@ sys.path.append(os.path.join(sys.path[0],"sds011"))
 sys.path.append(os.path.join(sys.path[0],"bme280"))
 
 import time
+import datetime
 import json
 import requests
 import numpy as np
@@ -99,7 +100,38 @@ class Measurement:
             "pressure":    self.pressure,
             "humidity":    self.humidity,
         })
+        push2opensense()
 
+    def push2opensense():
+        senseBox_ID = "" # your senseBox ID
+        pm10_ID = "" # your senseBox PM10 sensor ID
+        pm25_ID = "" # your senseBox PM25 sensor ID
+        temperature_ID = "" # your senseBox temperature sensor ID
+        humidity_ID = "" # your senseBox humidity sensor ID
+        pressure_ID = "" # your senseBox pressure sensor ID
+        ts = datetime.datetime.utcnow().isoformat("T")+"Z" # RFC 3339 Timestamp # optional # requires import datetime
+        loc = {"lat": , "lng": , "height": } # location object # optional # insert your lat lng and height (optional)
+        try:
+            requests.post("https://api.opensensemap.org/boxes/"+senseBox_ID+"/data",
+                json={
+                    #SDS011 P10
+                    pm10_ID: [self.pm10_value, ts, loc],
+                    # SDS011 P25
+                    pm25_ID: [self.pm25_value, ts, loc],
+                    #BME Temp
+                    temperature_ID: [self.temperature, ts, loc],
+                    #BME Hum
+                    humidity_ID: [self.humidity, ts, loc],
+                    #BME Press
+                    pressure_ID: [self.pressure/100, ts, loc], # Pressure in hPA, remove "\100" if you want the value in Pa
+                },
+                headers={
+                    "content-type": "application/json"
+                },
+                timeout=10 # optional 
+            )            
+        except:
+            pass
 
     def __pushLuftdaten(self, url, pin, values):
         requests.post(url,
