@@ -1,63 +1,64 @@
 #!/usr/bin/env python3
 
-import sys
-import os
-import yaml
-
-# Import-Pfade setzen
-sys.path.append(os.path.join(sys.path[0],"sds011"))
-sys.path.append(os.path.join(sys.path[0],"bme280"))
-
+import argparse
 import time
-import json
+import toml
 import requests
 import numpy as np
+import board
+import busio
 from sds011 import SDS011
-from Adafruit_BME280 import *
+import adafruit_bme280
 
-# Config
-with open("config.yml", 'r') as ymlfile:
-    config = yaml.load(ymlfile)
 
-# Logging
+# Parse command line args
+parser = argparse.ArgumentParser(description='Lufdaten in Python')
+parser.add_argument('-c', '--config', default='config.toml', help='path to config file')
+args = parser.parse_args()
+
+# Read config file
+config = toml.load(args.config)
+
+# Configure Logging
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-bme280 = BME280(
-    address=0x76,
-    t_mode=BME280_OSAMPLE_8,
-    p_mode=BME280_OSAMPLE_8,
-    h_mode=BME280_OSAMPLE_8,
-)
+# Configure BME280
+print("initialize BME280")
+i2c    = busio.I2C(board.SCL, board.SDA)
+bme280 = adafruit_bme280.Adafruit_BME280_I2C(i2c, address=0x76)
 
-# Create an instance of your bme280
-dusty = SDS011('/dev/ttyUSB0')
+# Configure SDS011
+print("initialize SDS011")
+dusty = SDS011(port='/dev/ttyUSB0')
 
 # Now we have some details about it
-print("SDS011 initialized: device_id={} firmware={}".format(dusty.device_id,dusty.firmware))
-
-# Set dutycyle to nocycle (permanent)
-dusty.dutycycle = 0
+print("SDS011 initialized: device_id={} firmware={}".format(dusty.devid, dusty.firmware))
 
 class Measurement:
     def __init__(self):
-        pm25_values = []
-        pm10_values = []
-        dusty.workstate = SDS011.WorkStates.Measuring
-        try:
-            for a in range(8):
-                values = dusty.get_values()
-                if values is not None:
-                    pm10_values.append(values[0])
-                    pm25_values.append(values[1])
-        finally:
-            dusty.workstate = SDS011.WorkStates.Sleeping
+        self.pm25_value  = None
+        self.pm10_value  = None
 
-        self.pm25_value  = np.mean(pm25_values)
-        self.pm10_value  = np.mean(pm10_values)
-        self.temperature = bme280.read_temperature()
-        self.humidity    = bme280.read_humidity()
-        self.pressure    = bme280.read_pressure()
+        if dusty:
+            pm25_values = []
+            pm10_values = []
+            dusty.wakeup()
+            try:
+                for a in range(8):
+                    values = dusty.read_measurement()
+                    if values is not None:
+                        pm10_values.append(values.get("pm10"))
+                        pm25_values.append(values.get("pm2.5"))
+            finally:
+                dusty.sleep()
+
+            self.pm25_value  = np.mean(pm25_values)
+            self.pm10_value  = np.mean(pm10_values)
+
+        self.temperature = bme280.temperature
+        self.humidity    = bme280.relative_humidity
+        self.pressure    = bme280.pressure
 
     def sendInflux(self):
         cfg = config['influxdb']
@@ -137,9 +138,9 @@ def run():
 sensorID  = config['luftdaten'].get('sensor') or ("raspi-" + getSerial())
 starttime = time.time()
 
-while True:
-    print("running ...")
-    run()
-    time.sleep(60.0 - ((time.time() - starttime) % 60.0))
-
-print("Stopped")
+if __name__ == "__main__":
+    while True:
+        print("running ...")
+        run()
+        time.sleep(60.0 - ((time.time() - starttime) % 60.0))
+    print("Stopped")

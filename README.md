@@ -17,7 +17,7 @@ Python 3 program for the [luftdaten.info](http://luftdaten.info/) sensor network
 
 ## Dependencies
 
-    apt install python3-numpy python3-requests python3-yaml python3-serial
+    apt install python3-numpy python3-requests python3-yaml python3-serial pipenv
 
 You also need to install [Adafruit_Python_BME280](https://github.com/adafruit/Adafruit_Python_BME280):
 
@@ -30,9 +30,13 @@ You also need to install [Adafruit_Python_BME280](https://github.com/adafruit/Ad
 
 ## Configuration
 
-Copy the `config.yml.default` to `config.yml` and adjust the settings.
+Copy the `config.default.toml` to `config.toml` and adjust the settings.
 
 
 ## Running a systemd unit
 
 Take a look at the [dusty.unit](contrib/dusty.unit).
+
+## Privileges
+
+The process needs privileges in the groups `i2c` and `dialout`.
