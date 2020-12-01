@@ -9,6 +9,7 @@ numpy = "*"
 adafruit-circuitpython-bme280 = "*"
 sds011 = "*"
 toml = "*"
+paho-mqtt = "*"
 
 [dev-packages]
 

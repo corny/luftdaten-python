@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3b4204de7c1d5902b5cc5825ae09de54541f8d4b9ae391aa2e5e842cf2fff969"
+            "sha256": "22a3743b3796eae2cac761757ffb3427152f1c125dc525b03dd5dabeaad148fd"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -24,10 +24,10 @@
         },
         "adafruit-circuitpython-bme280": {
             "hashes": [
-                "sha256:6585fc03e8ab61db35727b7b35e943ceb0e51d5a2fbee37a57eacbff810cf957"
+                "sha256:08a4ad0ae1737ca1589dde6bc8c170a4625d4b263278fc5b7a3b4047b7ec9dd4"
             ],
             "index": "pypi",
-            "version": "==2.5.0"
+            "version": "==2.5.1"
         },
         "adafruit-circuitpython-busdevice": {
             "hashes": [
@@ -107,6 +107,13 @@
             ],
             "index": "pypi",
             "version": "==1.19.4"
+        },
+        "paho-mqtt": {
+            "hashes": [
+                "sha256:9feb068e822be7b3a116324e01fb6028eb1d66412bf98595ae72698965cb1cae"
+            ],
+            "index": "pypi",
+            "version": "==1.5.1"
         },
         "pyftdi": {
             "hashes": [

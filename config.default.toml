@@ -9,3 +9,10 @@ url      = "http://example.com:8086/write?precision=s&db=sensors"
 username = "sensors"
 password = "secret"
 node     = "esp8266-123456"
+
+[mqtt]
+enabled   = false
+broker    = "localhost"
+port      = 1883
+topic     = "/python/mqtt"
+client_id = "dusty"

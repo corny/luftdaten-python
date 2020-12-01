@@ -4,11 +4,13 @@ import argparse
 import time
 import toml
 import requests
+import json
 import numpy as np
 import board
 import busio
 from sds011 import SDS011
 import adafruit_bme280
+from paho.mqtt import client as mqtt_client
 
 
 # Parse command line args
@@ -35,6 +37,13 @@ dusty = SDS011(port='/dev/ttyUSB0')
 # Now we have some details about it
 print("SDS011 initialized: device_id={} firmware={}".format(dusty.devid, dusty.firmware))
 
+# Configure MQTT
+mqtt_conn = None
+mqtt_cfg  = config["mqtt"]
+if mqtt_cfg["enabled"]:
+    mqtt_conn = mqtt_client.Client(mqtt_cfg["client_id"])
+    mqtt_conn.connect(mqtt_cfg["broker"], mqtt_cfg["port"])
+
 class Measurement:
     def __init__(self):
         self.pm25_value  = None
@@ -59,6 +68,15 @@ class Measurement:
         self.temperature = bme280.temperature
         self.humidity    = bme280.relative_humidity
         self.pressure    = bme280.pressure
+
+    def sendMQTT(self):
+        mqtt_conn.publish(mqtt_cfg["topic"], json.dumps({
+            "dust_pm10":  self.pm10_value,
+            "dust_pm25":  self.pm25_value,
+            "temperature": self.temperature,
+            "pressure":    self.pressure,
+            "humidity":    self.humidity,
+        }))
 
     def sendInflux(self):
         cfg = config['influxdb']
@@ -130,6 +148,9 @@ def run():
     print('Temp      = {:0.2f} deg C'.format(m.temperature))
     print('Humidity  = {:0.2f} %'.format(m.humidity))
     print('Pressure  = {:0.2f} hPa'.format(m.pressure/100))
+
+    if mqtt_conn:
+        m.sendMQTT()
 
     m.sendLuftdaten()
     m.sendInflux()

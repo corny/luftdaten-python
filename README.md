@@ -1,6 +1,11 @@
 # dusty-python
 
 Python 3 program for the [luftdaten.info](http://luftdaten.info/) sensor network.
+It has been written to run on a Raspberry Pi and to to send collected measurements to:
+
+* luftdaten.info
+* InfluxDB
+* MQTT broker
 
 
 ## Supported Hardware
@@ -9,29 +14,14 @@ Python 3 program for the [luftdaten.info](http://luftdaten.info/) sensor network
 * [Bosch BME 2280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) connected via I²C for temperature, humidity and pressure
 
 
-## Used libraries
-
-* https://gitlab.com/frankrich/sds011_particle_sensor
-* https://github.com/adafruit/Adafruit_Python_BME280
-
-
 ## Dependencies
 
-    apt install python3-numpy python3-requests python3-yaml python3-serial pipenv
-
-You also need to install [Adafruit_Python_BME280](https://github.com/adafruit/Adafruit_Python_BME280):
-
-    apt-get update
-    apt-get install build-essential python-pip python-dev python-smbus git
-    git clone https://github.com/adafruit/Adafruit_Python_GPIO.git
-    cd Adafruit_Python_GPIO
-    python3 setup.py install
+    apt install python3 pipenv
 
 
 ## Configuration
 
 Copy the `config.default.toml` to `config.toml` and adjust the settings.
-
 
 ## Running a systemd unit
 
@@ -39,4 +29,4 @@ Take a look at the [dusty.unit](contrib/dusty.unit).
 
 ## Privileges
 
-The process needs privileges in the groups `i2c` and `dialout`.
+On Raspbian the process needs privileges in the groups `i2c` and `dialout`.
