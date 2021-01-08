@@ -14,7 +14,7 @@ from paho.mqtt import client as mqtt_client
 
 
 # Parse command line args
-parser = argparse.ArgumentParser(description='Lufdaten in Python')
+parser = argparse.ArgumentParser(description='Luftdaten in Python')
 parser.add_argument('-c', '--config', default='config.toml', help='path to config file')
 args = parser.parse_args()
 
