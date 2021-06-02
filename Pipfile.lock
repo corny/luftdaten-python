@@ -18,9 +18,9 @@
     "default": {
         "adafruit-blinka": {
             "hashes": [
-                "sha256:7724bf44540dd1989689a4f7a3b9cbe7135826ef93ee7245c7c0fd5a52220cef"
+                "sha256:a47a05707d3573b1d28118ec667813ced00ac6dbb62d6c6f377e8366d26160f1"
             ],
-            "version": "==6.4.2"
+            "version": "==6.10.0"
         },
         "adafruit-circuitpython-bme280": {
             "hashes": [
@@ -37,9 +37,9 @@
         },
         "adafruit-platformdetect": {
             "hashes": [
-                "sha256:40979bf7e8a24b8419ee9a0e069e68283e4ab9a8241ba71f4da95b351c2b2353"
+                "sha256:b40dd469f685bd41fa2a8d0e017861f09cfe86dfac793ba13e306c1c7688eab1"
             ],
-            "version": "==3.5.0"
+            "version": "==3.13.3"
         },
         "adafruit-pureio": {
             "hashes": [
@@ -49,10 +49,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c",
-                "sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830"
+                "sha256:2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee",
+                "sha256:50b1e4f8446b06f41be7dd6338db18e0990601dce795c2b1686458aa7e8fa7d8"
             ],
-            "version": "==2020.12.5"
+            "version": "==2021.5.30"
         },
         "chardet": {
             "hashes": [
@@ -117,10 +117,10 @@
         },
         "pyftdi": {
             "hashes": [
-                "sha256:21e84163a48057de9e4eba6efcb42e51994868b702e1eabdbd2a8cbddad66b66",
-                "sha256:e8123dc3663ff3ac89eac962774e755b611e7f7202e9e36f6b6eb915fedc53f1"
+                "sha256:64d3970e82e03fbbbceb075428306a1f3e7e88743a8fc6c9e12fdcbeb8af87f0",
+                "sha256:c9dc644b90d10631f2a2beedbd717c4735cfdd4db9e4d8a2d9af57d78a09cf5f"
             ],
-            "version": "==0.52.9"
+            "version": "==0.53.1"
         },
         "pyserial": {
             "hashes": [
@@ -162,11 +162,11 @@
         },
         "urllib3": {
             "hashes": [
-                "sha256:2f4da4594db7e1e110a944bb1b551fdf4e6c136ad42e4234131391e21eb5b0df",
-                "sha256:e7b021f7241115872f92f43c6508082facffbd1c048e3c6e2bb9c2a157e28937"
+                "sha256:753a0374df26658f99d826cfe40394a686d05985786d946fbe4165b5148f5a7c",
+                "sha256:a7acd0977125325f516bda9735fa7142b909a8d01e8b2e4c8108d0984e6e0098"
             ],
             "index": "pypi",
-            "version": "==1.26.4"
+            "version": "==1.26.5"
         }
     },
     "develop": {}
